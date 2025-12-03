@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Price Predictor</title>
+    <style>
+        /* General Styles and Background (Black/Red/White Theme) */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Tech-inspired gradient background with animated elements */
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated circuit board pattern overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(255, 0, 0, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating tech particles */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, rgba(255, 0, 0, 0.4), transparent),
+                radial-gradient(2px 2px at 60% 70%, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(1px 1px at 50% 50%, rgba(255, 0, 0, 0.3), transparent),
+                radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.2), transparent);
+            background-size: 200% 200%;
+            animation: particleFloat 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Dark overlay with subtle red tint */
+            background: radial-gradient(ellipse at center, rgba(255, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.85) 100%);
+            z-index: 1;
+        }
+
+        /* Container and Form Styling */
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            /* Semi-transparent black with blur and a striking red border/shadow */
+            background: rgba(10, 10, 10, 0.85); 
+            backdrop-filter: blur(8px);
+            border-radius: 15px;
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
+            color: white;
+            z-index: 2;
+            margin: 20px 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-shadow: 0 0 8px #ff0000;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 0;
+            border: 1px solid #ff0000;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1); 
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: #ffffff;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #ccc;
+            opacity: 0.8;
+        }
+
+        option {
+            color: #000;
+            background-color: #fff;
+            padding: 5px;
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(90deg, #b30000, #ff0000); 
+            color: white;
+            padding: 14px;
+            border: none;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #ff0000, #e60000);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ff73;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        #error {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 16px;
+            color: #ffcccc;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<div class="container">
+    <h2> Car Price Prediction</h2>
+    
+    <div class="form-group">
+        <label for="company">Company</label>
+        <select id="company">
+            <option value="">Select Company</option>
+            <option value="Maruti">Maruti</option>
+            <option value="Hyundai">Hyundai</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Ford">Ford</option>
+            <option value="Mahindra">Mahindra</option>
+            <option value="Tata">Tata</option>
+            <option value="Volkswagen">Volkswagen</option>
+            <option value="Renault">Renault</option>
+            <option value="Chevrolet">Chevrolet</option>
+            <option value="Honda">Honda</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="year">Year</label>
+        <input type="number" id="year" placeholder="e.g., 2018" min="1950" max="2025" />
+    </div>
+
+    <div class="form-group">
+        <label for="km_driven">KM Driven</label>
+        <input type="number" id="km_driven" placeholder="e.g., 50000" min="0" />
+    </div>
+
+    <div class="form-group">
+        <label for="fuel">Fuel Type</label>
+        <select id="fuel">
+            <option value="">Select Fuel Type</option>
+            <option>Petrol</option>
+            <option>Diesel</option>
+            <option>CNG</option>
+            <option>Electric</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="transmission">Transmission</label>
+        <select id="transmission">
+            <option value="">Select Transmission</option>
+            <option>Manual</option>
+            <option>Automatic</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="owner">Owner</label>
+        <select id="owner">
+            <option value="">Select Owner Type</option>
+            <option>First Owner</option>
+            <option>Second Owner</option>
+            <option>Third Owner</option>
+            <option>Fourth & Above Owner</option>
+            <option>Test Drive Car</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="seller_type">Seller Type</label>
+        <select id="seller_type">
+            <option value="">Select Seller Type</option>
+            <option>Individual</option>
+            <option>Dealer</option>
+            
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="seats">Seats</label>
+        <input type="number" id="seats" placeholder="e.g., 5" min="2" max="10" />
+    </div>
+
+    <button onclick="predictPrice()">Predict Price</button>
+
+    <p id="result"></p>
+    <p id="error"></p>
+</div>
+
+<script>
+function predictPrice() {
+    const company = document.getElementById("company").value.trim(); 
+    const year = document.getElementById("year").value;
+    const km = document.getElementById("km_driven").value;
+    const fuel = document.getElementById("fuel").value;
+    const transmission = document.getElementById("transmission").value;
+    const owner = document.getElementById("owner").value;
+    const seller_type = document.getElementById("seller_type").value;
+    const seats = document.getElementById("seats").value;
+
+    if (!company || !year || !km || !fuel || !transmission || !owner || !seller_type || !seats) {
+        document.getElementById("error").innerHTML = "🛑 Please fill all fields!";
+        document.getElementById("result").innerHTML = "";
+        return;
+    }
+    
+    const companyToPass = company; 
+    document.getElementById("error").innerHTML = "";
+
+    fetch("http://127.0.0.1:5000/predict", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            Company: companyToPass, 
+            year: parseInt(year),
+            km_driven: parseInt(km),
+            fuel: fuel,
+            transmission: transmission,
+            owner: owner,
+            seller_type: seller_type,
+            seats: parseInt(seats)
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("result").innerHTML = data.predicted_price ? 
+            " Predicted Price: ₹ " + data.predicted_price : "";
+        document.getElementById("error").innerHTML = data.error ? "⚠️ " + data.error : "";
+    })
+    .catch(err => {
+        document.getElementById("error").innerHTML = "❌ Server error! Could not connect to the prediction API.";
+        document.getElementById("result").innerHTML = "";
+    });
+}
+</script>
+
+</body>
+</html>
