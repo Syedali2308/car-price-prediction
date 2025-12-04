@@ -3,8 +3,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
+import traceback
 
-# Load model
+# Load your trained pipeline
 try:
     model = joblib.load('carprediction.pkl')
     print("Model loaded successfully!")
@@ -12,8 +13,9 @@ except Exception as e:
     print(f"Error loading model: {e}")
     model = None
 
-# Initialize Flask app
 app = Flask(__name__)
+
+# 🔥 CORS ENABLE (important for Vercel frontend + Railway backend)
 CORS(app)
 
 @app.route('/predict', methods=['POST'])
@@ -26,33 +28,47 @@ def predict():
         if not data:
             return jsonify({'error': 'Invalid JSON data received.'}), 400
 
-        if isinstance(data, list):
-            if data:
-                data = data[0]
-            else:
-                return jsonify({'error': 'Received empty data list.'}), 400
+        # Handle list input
+        if isinstance(data, list) and data:
+            data = data[0]
 
-        # Build input DataFrame
+        # Validate required fields
+        required_fields = [
+            'Company', 'year', 'km_driven', 'fuel',
+            'transmission', 'owner', 'seller_type', 'seats'
+        ]
+        for field in required_fields:
+            if field not in data or data[field] in [None, ""]:
+                return jsonify({'error': f'Missing or empty field: {field}'}), 400
+
+        # Capitalize company to reduce unknown category issues
+        company = str(data.get('Company')).strip()
+        company = company[0].upper() + company[1:].lower()
+
+        # Prepare input DataFrame
         input_data = pd.DataFrame([{
-            'Company': data.get('Company'),
+            'Company': company,
             'year': int(data.get('year')),
             'km_driven': int(data.get('km_driven')),
             'fuel': data.get('fuel'),
             'transmission': data.get('transmission'),
             'owner': data.get('owner'),
             'seller_type': data.get('seller_type'),
-            'seats': int(data.get('seats'))
+            'seats': int(data.get('seats')),
         }])
 
+        # Predict
         prediction = model.predict(input_data)[0]
-        return jsonify({'predicted_price': np.round(prediction, 2)})
+
+        return jsonify({'predicted_price': float(np.round(prediction, 2))})
 
     except Exception as e:
-        print(f"Prediction failed due to: {e}")
-        return jsonify({'error': 'Prediction failed on server. Check logs.'}), 500
+        print("=== PREDICTION ERROR ===")
+        traceback.print_exc()
+        return jsonify({'error': 'Prediction failed on server. Check server logs.'}), 500
 
-if __name__ == "__main__":
-    # Detect if running on Render or locally
-    import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host="0.0.0.0", port=port)
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
+
+
