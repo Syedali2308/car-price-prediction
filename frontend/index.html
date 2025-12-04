@@ -40,15 +40,23 @@ h2 {
 
 label {font-weight:bold;}
 
+label {font-weight:bold;}
+
 input, select {
     width:100%;
     padding:10px;
     margin-top:5px;
     margin-bottom:15px;
     border:1px solid red;
-    background: rgba(255,255,255,0.1);
-    color:white;
+    background: rgba(0,0,0,0.6);  /* Fixed for dark theme */
+    color:white;                 /* White text for visibility */
     border-radius:8px;
+}
+
+select option {
+    background:#000;     /* Dropdown list visible */
+    color:white;
+    padding:10px;
 }
 
 button {
@@ -57,7 +65,7 @@ button {
     font-size:18px;
     background:red;
     border:none;
-    color:white;
+    color:white;     /* corrected (black was invisible on red) */
     border-radius:8px;
     cursor:pointer;
     margin-top:10px;
@@ -75,6 +83,7 @@ button:hover {background:#ff3d3d;}
     text-align:center;
     color:#00ff7f;
 }
+
 
 #error{
     margin-top:10px;
@@ -161,7 +170,7 @@ function predictPrice(){
     }
     error.innerHTML="";
 
-    fetch("https://heroic-optimism-production.up.railway.app/predict", { 
+    fetch("https://heroic-optimism-production-4989.up.railway.app/predict", { 
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify(data)
@@ -184,3 +193,4 @@ function predictPrice(){
 
 </body>
 </html>
+
