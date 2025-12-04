@@ -26,7 +26,8 @@ body {
 }
 
 .container {
-    width: 350px;
+    width: 90%;
+    max-width: 600px;
     background: rgba(0,0,0,0.75);
     padding: 25px;
     border-radius: 15px;
@@ -36,6 +37,27 @@ body {
 h2 {
     text-align: center;
     text-shadow: 0 0 10px red;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    font-size: 24px;
+    margin: 0 0 20px 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 500px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 label {font-weight:bold;}
@@ -46,15 +68,15 @@ input, select {
     width:100%;
     padding:10px;
     margin-top:5px;
-    margin-bottom:15px;
     border:1px solid red;
-    background: rgba(0,0,0,0.6);  /* Fixed for dark theme */
-    color:white;                 /* White text for visibility */
+    background: rgba(0,0,0,0.6);
+    color:white;
     border-radius:8px;
+    box-sizing: border-box;
 }
 
 select option {
-    background:#000;     /* Dropdown list visible */
+    background:#000;
     color:white;
     padding:10px;
 }
@@ -65,7 +87,7 @@ button {
     font-size:18px;
     background:red;
     border:none;
-    color:white;     /* corrected (black was invisible on red) */
+    color:white;
     border-radius:8px;
     cursor:pointer;
     margin-top:10px;
@@ -99,47 +121,65 @@ button:hover {background:#ff3d3d;}
 <div class="container">
     <h2>🚗 Car Price Prediction</h2>
 
-    <label>Company</label>
-    <select id="company">
-        <option value="">Select Company</option>
-        <option>Maruti</option><option>Hyundai</option><option>Toyota</option><option>Ford</option>
-        <option>Mahindra</option><option>Tata</option><option>Volkswagen</option><option>Renault</option>
-        <option>Chevrolet</option><option>Honda</option>
-    </select>
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Company</label>
+            <select id="company">
+                <option value="">Select Company</option>
+                <option>Maruti</option><option>Hyundai</option><option>Toyota</option><option>Ford</option>
+                <option>Mahindra</option><option>Tata</option><option>Volkswagen</option><option>Renault</option>
+                <option>Chevrolet</option><option>Honda</option>
+            </select>
+        </div>
 
-    <label>Year</label>
-    <input type="number" id="year" placeholder="e.g. 2018">
+        <div class="form-group">
+            <label>Year</label>
+            <input type="number" id="year" placeholder="e.g. 2018">
+        </div>
 
-    <label>KM Driven</label>
-    <input type="number" id="km_driven" placeholder="e.g. 45000">
+        <div class="form-group">
+            <label>KM Driven</label>
+            <input type="number" id="km_driven" placeholder="e.g. 45000">
+        </div>
 
-    <label>Fuel Type</label>
-    <select id="fuel">
-        <option value="">Select Fuel</option>
-        <option>Petrol</option><option>Diesel</option><option>CNG</option><option>LPG</option>
-    </select>
+        <div class="form-group">
+            <label>Fuel Type</label>
+            <select id="fuel">
+                <option value="">Select Fuel</option>
+                <option>Petrol</option><option>Diesel</option><option>CNG</option><option>LPG</option>
+            </select>
+        </div>
 
-    <label>Transmission</label>
-    <select id="transmission">
-        <option value="">Select Type</option>
-        <option>Manual</option><option>Automatic</option>
-    </select>
+        <div class="form-group">
+            <label>Transmission</label>
+            <select id="transmission">
+                <option value="">Select Type</option>
+                <option>Manual</option><option>Automatic</option>
+            </select>
+        </div>
 
-    <label>Owner</label>
-    <select id="owner">
-        <option value="">Select Owner</option>
-        <option>First Owner</option><option>Second Owner</option><option>Third Owner</option>
-        <option>Fourth & Above Owner</option><option>Test Drive Car</option>
-    </select>
+        <div class="form-group">
+            <label>Owner</label>
+            <select id="owner">
+                <option value="">Select Owner</option>
+                <option>First Owner</option><option>Second Owner</option><option>Third Owner</option>
+                <option>Fourth & Above Owner</option><option>Test Drive Car</option>
+            </select>
+        </div>
 
-    <label>Seller Type</label>
-    <select id="seller_type">
-        <option value="">Select Seller</option>
-        <option>Individual</option><option>Dealer</option>
-    </select>
+        <div class="form-group">
+            <label>Seller Type</label>
+            <select id="seller_type">
+                <option value="">Select Seller</option>
+                <option>Individual</option><option>Dealer</option>
+            </select>
+        </div>
 
-    <label>Seats</label>
-    <input type="number" id="seats" placeholder="e.g. 5">
+        <div class="form-group">
+            <label>Seats</label>
+            <input type="number" id="seats" placeholder="e.g. 5">
+        </div>
+    </div>
 
     <button onclick="predictPrice()">Predict Price</button>
 
@@ -193,4 +233,5 @@ function predictPrice(){
 
 </body>
 </html>
+
 
